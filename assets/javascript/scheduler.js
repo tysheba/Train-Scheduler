@@ -54,14 +54,14 @@ $("#add-train").on("click", function(event) {
 });
 
 // 3. Create Firebase event for adding train schedule to the database and a row in the html when a user adds an entry
-database.ref().on("child_added", function(childSnapshot) {
-    console.log(childSnapshot.val());
+database.ref().on("child_added", function(snap) {
+    console.log(snap.val());
   
     // Store everything into a variable.
-    var trainName = childSnapshot.val().train;
-    var destination = childSnapshot.val().destination;
-    var frequency = childSnapshot.val().frequency;
-    var firstTime = childSnapshot.val().firstTime;
+    var trainName = snap.val().train;
+    var destination = snap.val().destination;
+    var frequency = snap.val().frequency;
+    var firstTime = snap.val().firstTime;
     // console.log(trainName);
   
    
@@ -78,9 +78,6 @@ database.ref().on("child_added", function(childSnapshot) {
     
     var nextArr = moment().add(minAway,"minutes").format('LT');
    console.log(nextArr);
-  
-  
-    // console.log(minAway);
   
     // Create the new row
     var newRow = $("<tr>").append(
