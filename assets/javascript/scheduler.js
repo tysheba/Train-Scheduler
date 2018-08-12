@@ -40,16 +40,59 @@ $("#add-train").on("click", function(event) {
 
   // Logs everything to console
   console.log(newTrain.train);
-  console.log(newTrain.destination);
-  console.log(newTrain.frequency);
-  console.log(newTrain.firstTime);
+  // console.log(newTrain.destination);
+  // console.log(newTrain.frequency);
+  // console.log(newTrain.firstTime);
 
-  alert("New schedule added");
 
   // Clears all of the text-boxes
   $("#trainName-input").val("");
-  $("destination-input").val("");
-  $("#frequncy-input").val("");
+  $("#destination-input").val("");
+  $("#frequency-input").val("");
   $("#firstTime-input").val("");
 
 });
+
+// 3. Create Firebase event for adding train schedule to the database and a row in the html when a user adds an entry
+database.ref().on("child_added", function(childSnapshot) {
+    console.log(childSnapshot.val());
+  
+    // Store everything into a variable.
+    var trainName = childSnapshot.val().train;
+    var destination = childSnapshot.val().destination;
+    var frequency = childSnapshot.val().frequency;
+    var firstTime = childSnapshot.val().firstTime;
+    // console.log(trainName);
+  
+   
+
+  
+    // Prettify the time of the first train
+    var firstTimePretty = moment.unix(firstTime).format("hh:mm");
+  
+    // // Calculate the next arrival time and minutes away
+      // // Calculate the minutes away
+    var minAway = frequency - ((moment().diff(moment(firstTime, "X"), "minutes")) % frequency)
+    console.log(minAway);
+  
+    
+    var nextArr = moment().add(minAway,"minutes").format('LT');
+   console.log(nextArr);
+  
+  
+    // console.log(minAway);
+  
+    // Create the new row
+    var newRow = $("<tr>").append(
+      $("<td>").text(trainName),
+      $("<td>").text(destination),
+      $("<td>").text(frequency),
+      $("<td>").text(nextArr),
+      $("<td>").text(minAway)
+    );
+
+  
+    // Append the new row to the table
+    $("#train-schedule").append(newRow);
+  });
+  
