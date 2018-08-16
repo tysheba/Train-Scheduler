@@ -18,6 +18,8 @@ var destination = "";
 var frequency = 0;
 var firstTime = "";
 var newTrain = {};
+var temperature = "";
+var weather = '';
 
 // 2. Button for adding Train Schedule
 $("#add-train").on("click", function (event) {
@@ -68,10 +70,10 @@ database.ref().on("child_added", function (snap) {
   console.log(snap.val());
 
   // Store everything into a variable.
-  var trainName = snap.val().train;
-  var destination = snap.val().destination;
-  var frequency = snap.val().frequency;
-  var firstTime = snap.val().firstTime;
+  trainName = snap.val().train;
+  destination = snap.val().destination;
+  frequency = snap.val().frequency;
+  firstTime = snap.val().firstTime;
   // console.log(trainName);
 
 
@@ -89,18 +91,21 @@ database.ref().on("child_added", function (snap) {
 
    // Get weather information for the destination city
 
-   var queryURL = "http://api.openweathermap.org/data/2.5/weather?q=Baltimore&units=imperial&APPID=d113a487796be0908add1c04f29fec71";
+   var queryURL = "http://api.openweathermap.org/data/2.5/weather?q="+destination+"&units=imperial&APPID=d113a487796be0908add1c04f29fec71";
   
    var apiKey = "08d43ec37b557131abd63c112efe0b4b"
+
  
    $.ajax({
      url: queryURL,
      method: "GET"
    }).then(function(response) {
      console.log(response);
-     var weather = response.main.temp;
+      temperature = response.main.temp;
+      weather = response.weather[0].description;
+     console.log(temperature);
      console.log(weather);
-   });
+   
 
   // Create the new row
   var newRow = $("<tr>").append(
@@ -108,11 +113,14 @@ database.ref().on("child_added", function (snap) {
     $("<td>").text(destination),
     $("<td>").text(frequency),
     $("<td>").text(nextArr),
-    $("<td>").text(minAway)
+    $("<td>").text(minAway),
+    $("<td>").text(temperature + " degrees and " + weather)
   );
 
 
   // Append the new row to the table
+  console.log(temperature);
   $("#train-schedule").append(newRow);
 });
 
+});
