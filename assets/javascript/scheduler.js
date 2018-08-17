@@ -18,8 +18,8 @@ var destination = "";
 var frequency = 0;
 var firstTime = "";
 var newTrain = {};
-var temperature = "";
-var weather = '';
+var temperature ='';
+var weather ='';
 
 // 2. Button for adding Train Schedule
 $("#add-train").on("click", function (event) {
@@ -33,7 +33,7 @@ $("#add-train").on("click", function (event) {
   firstTime = $("#firstTime-input").val();
   // console.log(firstTime);
 
- 
+
 
   // Creates local "temporary" object for holding train information data
   newTrain = {
@@ -88,39 +88,40 @@ database.ref().on("child_added", function (snap) {
 
   var nextArr = moment().add(minAway, "minutes").format('LT');
   // console.log(nextArr);
+  // Get weather information for the destination city
 
-   // Get weather information for the destination city
+  var queryURL = "http://api.openweathermap.org/data/2.5/weather?q=" + destination + "&units=imperial&APPID=d113a487796be0908add1c04f29fec71";
 
-   var queryURL = "http://api.openweathermap.org/data/2.5/weather?q="+destination+"&units=imperial&APPID=d113a487796be0908add1c04f29fec71";
-  
-   var apiKey = "08d43ec37b557131abd63c112efe0b4b"
+  var apiKey = "08d43ec37b557131abd63c112efe0b4b"
 
- 
-   $.ajax({
-     url: queryURL,
-     method: "GET"
-   }).then(function(response) {
-     console.log(response);
-      temperature = response.main.temp;
-      weather = response.weather[0].description;
-     console.log(temperature);
-     console.log(weather);
-   
+  $.ajax({
+    url: queryURL,
+    method: "GET"
+  }).then(function (response) {
+    console.log(response);
+    temperature = response.main.temp;
+    weather = response.weather[0].description;
+    console.log(temperature);
+    console.log(weather);
+
+ });
 
   // Create the new row
   var newRow = $("<tr>").append(
-    $("<td>").text(trainName),
-    $("<td>").text(destination),
-    $("<td>").text(frequency),
-    $("<td>").text(nextArr),
-    $("<td>").text(minAway),
-    $("<td>").text(temperature + " degrees and " + weather)
+    $("<td>").html(trainName),
+    $("<td>").html(destination),
+    $("<td>").html(frequency),
+    $("<td>").html(nextArr),
+    $("<td>").html(minAway)
+    // $("<td>").html(temperature + "&#8457 and " + weather)
   );
 
 
   // Append the new row to the table
   console.log(temperature);
   $("#train-schedule").append(newRow);
-});
+ 
+
+  
 
 });
